@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# Default values
+ENCODING="base64"
+LENGTH=16
+
+usage() {
+  echo "Usage: $0 [-e encoding] [-l length]"
+  echo "  -e encoding   Encoding type: base64, hex, or others supported by openssl rand (default: base64)"
+  echo "  -l length     Number of bytes (default: 16)"
+  echo "  -h            Show this help message"
+  exit 1
+}
+
+while getopts "e:l:h" opt; do
+  case ${opt} in
+    e)
+      ENCODING="${OPTARG}"
+      ;;
+    l)
+      LENGTH="${OPTARG}"
+      ;;
+    h)
+      usage
+      ;;
+    *)
+      usage
+      ;;
+  esac
+done
+
+case "$ENCODING" in
+  base64|hex)
+    ;;
+  *)
+    echo "Warning: Unknown encoding '$ENCODING'. Proceeding, but openssl may error if not supported."
+    ;;
+esac
+
+openssl rand -$ENCODING "$LENGTH"
